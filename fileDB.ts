@@ -9,11 +9,6 @@ const fileDB = {
     try {
       const fileContents = await fs.readFile(itemFilename);
       itemList = JSON.parse(fileContents.toString());
-      // if (sync.existsSync(filename)) {
-      //
-      // } else {
-      //   await this.addItem({author: 'initial', message: 'message'})
-      // }
     } catch  {
       itemList = [];
     }
@@ -21,6 +16,10 @@ const fileDB = {
 
   async getItems () {
     return itemList;
+  },
+
+  async getItemById (id: string) {
+    return itemList.find(item => item.id === id);
   },
 
   async addItem (itemToAdd: ItemWithOutId) {
@@ -37,6 +36,21 @@ const fileDB = {
 
   async saveItem () {
     await fs.writeFile(itemFilename, JSON.stringify(itemList, null, 2));
+  },
+
+  async deleteItem (id: string) {
+    const items = await this.getItems();
+    itemList = items.filter((item) => item.id !== id);
+    await this.saveItem();
+  },
+
+  async updateItem (id: string, newItem: Item) {
+    const items = await this.getItems();
+    itemList = items.map((item) => {
+      if (item.id === id) return {...newItem};
+      return item;
+    });
+    await this.saveItem();
   }
 };
 
