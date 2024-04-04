@@ -1,9 +1,11 @@
 
-export interface Message {
+export interface Item {
   id: string,
-  message: string,
-  author: string,
+  categoryId: string,
+  locationId: string,
+  name: string,
+  description: string | null,
   image: string | null
 }
 
-export type MessageWithOutId = Omit<Message, 'id'>
+export type ItemWithOutId = Omit<Item, 'id'>

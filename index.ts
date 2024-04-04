@@ -1,5 +1,5 @@
 import express from 'express';
-import messageRouter from './routes/messages';
+import itemRouter from './routes/item';
 import fileDB from './fileDB';
 
 const app = express();
@@ -7,10 +7,10 @@ const port = 8000;
 
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/messages', messageRouter);
+app.use('/items', itemRouter);
 
 const run = async () => {
-  await fileDB.init();
+  await fileDB.initItems();
 
   app.listen(port, () => {
     console.log(`Server running on ${port} port.`);

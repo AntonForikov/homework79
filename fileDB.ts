@@ -1,38 +1,42 @@
 import {promises as fs} from 'fs';
-import {Message, MessageWithOutId} from './types';
+import {Item, ItemWithOutId} from './types';
 
-const filename = './db.json';
-let data: Message[] = [];
+const itemFilename = './items.json';
+let itemList: Item[] = [];
 
 const fileDB = {
-  async init (){
+  async initItems (){
     try {
-      const fileContents = await fs.readFile(filename);
-      data = JSON.parse(fileContents.toString());
+      const fileContents = await fs.readFile(itemFilename);
+      itemList = JSON.parse(fileContents.toString());
       // if (sync.existsSync(filename)) {
       //
       // } else {
       //   await this.addItem({author: 'initial', message: 'message'})
       // }
     } catch  {
-      data = [];
+      itemList = [];
     }
   },
-  async getItems () {
-    return data;
-  },
-  async addItem (item: MessageWithOutId) {
-    const message = {
-      id: crypto.randomUUID(),
-      ...item,
-    }
-    data.push({...message});
-    await this.save();
 
-    return message;
+  async getItems () {
+    return itemList;
   },
-  async save () {
-    await fs.writeFile(filename, JSON.stringify(data, null, 2));
+
+  async addItem (itemToAdd: ItemWithOutId) {
+    const item: Item = {
+      id: crypto.randomUUID(),
+      ...itemToAdd,
+    };
+
+    itemList.push({...item});
+    await this.saveItem();
+
+    return item;
+  },
+
+  async saveItem () {
+    await fs.writeFile(itemFilename, JSON.stringify(itemList, null, 2));
   }
 };
 
