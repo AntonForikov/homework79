@@ -8,4 +8,12 @@ export interface Item {
   image: string | null
 }
 
-export type ItemWithOutId = Omit<Item, 'id'>
+export type ItemWithOutId = Omit<Item, 'id'>;
+
+export interface Category {
+  id: string,
+  title: string,
+  description: string | null
+}
+
+export type CategoryWithoutId = Omit<Category, 'id'>;

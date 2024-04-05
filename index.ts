@@ -11,6 +11,7 @@ app.use('/items', itemRouter);
 
 const run = async () => {
   await fileDB.initItems();
+  await fileDB.initCategories();
 
   app.listen(port, () => {
     console.log(`Server running on ${port} port.`);

@@ -1,8 +1,11 @@
 import {promises as fs} from 'fs';
-import {Item, ItemWithOutId} from './types';
+import {Category, CategoryWithoutId, Item, ItemWithOutId} from './types';
 
 const itemFilename = './items.json';
+const categoryFilename = './categories.json';
+
 let itemList: Item[] = [];
+let categoryList: Category[] = [];
 
 const fileDB = {
   async initItems (){
@@ -51,7 +54,55 @@ const fileDB = {
       return item;
     });
     await this.saveItem();
-  }
+  },
+
+  async initCategories (){
+    try {
+      const fileContents = await fs.readFile(categoryFilename);
+      categoryList = JSON.parse(fileContents.toString());
+    } catch  {
+      categoryList = [];
+    }
+  },
+
+  async getCategories () {
+    return categoryList;
+  },
+
+  async getCategoryById (id: string) {
+    return categoryList.find(category => category.id === id);
+  },
+
+  async addCategory (categoryToAdd: CategoryWithoutId) {
+    const category: Category = {
+      id: crypto.randomUUID(),
+      ...categoryToAdd,
+    };
+
+    categoryList.push({...category});
+    await this.saveCategory();
+
+    return category;
+  },
+
+  async saveCategory () {
+    await fs.writeFile(categoryFilename, JSON.stringify(categoryList, null, 2));
+  },
+
+  async deleteCategory (id: string) {
+    const categories = await this.getCategories();
+    categoryList = categories.filter((category) => category.id !== id);
+    await this.saveCategory();
+  },
+
+  async updateCategory (id: string, newCategory: Category) {
+    const categories = await this.getCategories();
+    categoryList = categories.map((category) => {
+      if (category.id === id) return {...newCategory};
+      return category;
+    });
+    await this.saveCategory();
+  },
 };
 
 export default fileDB;
