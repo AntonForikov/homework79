@@ -34,8 +34,8 @@ itemRouter.post('/', imagesUpload.single('image'), async (req, res) => {
     categoryId,
     locationId,
     name,
-    description: description && typeof (description) === 'string'
-      ? description[0] === ' '
+    description: description && typeof (description) !== 'string'
+      ? description[0] === ' ' || description === ''
         ? null
         : description
       : null,
@@ -45,7 +45,7 @@ itemRouter.post('/', imagesUpload.single('image'), async (req, res) => {
   return res.json(result);
 });
 
-itemRouter.get('/', async (req, res) => {
+itemRouter.get('/', async (_req, res) => {
   const itemList = await fileDB.getItems();
   const result = itemList.map((item) => {
     return {
@@ -87,7 +87,7 @@ itemRouter.put('/:id', imagesUpload.single('image'), async (req,res) => {
   const objToBase: Item = {
     ...objToUpdate,
     description: description && typeof (description) === 'string'
-      ? description[0] === ' '
+      ? description[0] === ' ' || description === ''
         ? null
         : description
       : null,
