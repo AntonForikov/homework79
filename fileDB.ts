@@ -1,11 +1,13 @@
 import {promises as fs} from 'fs';
-import {Category, CategoryWithoutId, Item, ItemWithOutId} from './types';
+import {CategoryLocation, CategoryLocationWithoutId, Item, ItemWithOutId} from './types';
 
 const itemFilename = './items.json';
 const categoryFilename = './categories.json';
+const locationFilename = './locations';
 
 let itemList: Item[] = [];
-let categoryList: Category[] = [];
+let categoryList: CategoryLocation[] = [];
+let locationList: CategoryLocation[] = [];
 
 const fileDB = {
   async initItems (){
@@ -73,8 +75,8 @@ const fileDB = {
     return categoryList.find(category => category.id === id);
   },
 
-  async addCategory (categoryToAdd: CategoryWithoutId) {
-    const category: Category = {
+  async addCategory (categoryToAdd: CategoryLocationWithoutId) {
+    const category: CategoryLocation = {
       id: crypto.randomUUID(),
       ...categoryToAdd,
     };
@@ -95,13 +97,61 @@ const fileDB = {
     await this.saveCategory();
   },
 
-  async updateCategory (id: string, newCategory: Category) {
+  async updateCategory (id: string, newCategory: CategoryLocation) {
     const categories = await this.getCategories();
     categoryList = categories.map((category) => {
       if (category.id === id) return {...newCategory};
       return category;
     });
     await this.saveCategory();
+  },
+
+  async initLocations (){
+    try {
+      const fileContents = await fs.readFile(locationFilename);
+      locationList = JSON.parse(fileContents.toString());
+    } catch  {
+      locationList = [];
+    }
+  },
+
+  async getLocations () {
+    return locationList;
+  },
+
+  async getLocationById (id: string) {
+    return locationList.find(category => category.id === id);
+  },
+
+  async addLocation (locationToAdd: CategoryLocationWithoutId) {
+    const location: CategoryLocation = {
+      id: crypto.randomUUID(),
+      ...locationToAdd,
+    };
+
+    locationList.push({...location});
+    await this.saveLocation();
+
+    return location;
+  },
+
+  async saveLocation () {
+    await fs.writeFile(locationFilename, JSON.stringify(locationList, null, 2));
+  },
+
+  async deleteLocation (id: string) {
+    const locations = await this.getLocations();
+    locationList = locations.filter((location) => location.id !== id);
+    await this.saveLocation();
+  },
+
+  async updateLocation (id: string, newLocation: CategoryLocation) {
+    const locations = await this.getLocations();
+    locationList = locations.map((location) => {
+      if (location.id === id) return {...newLocation};
+      return location;
+    });
+    await this.saveLocation();
   },
 };
 

@@ -94,22 +94,28 @@ itemRouter.put('/:id', imagesUpload.single('image'), async (req,res) => {
     image: req.file ? req.file.filename : null
   };
 
-  if (typeof (categoryId) !== 'string') {
-    return res.status(400).json({error: 'categoryId type must ba a string.'});
-  } else if (categoryId[0] !== ' ' && categoryId !== '') {
-    objToBase.categoryId = categoryId;
+  if (categoryId) {
+    if (typeof (categoryId) !== 'string') {
+      return res.status(400).json({error: 'categoryId type must ba a string.'});
+    } else if (categoryId[0] !== ' ' && categoryId !== '') {
+      objToBase.categoryId = categoryId;
+    }
   }
 
-  if (typeof (locationId) !== 'string') {
-    return res.status(400).json({error: 'locationId type must ba a string.'});
-  } else if (locationId[0] !== ' ' && locationId !== '') {
-    objToBase.locationId = locationId;
+  if (locationId) {
+    if (typeof (locationId) !== 'string') {
+      return res.status(400).json({error: 'locationId type must ba a string.'});
+    } else if (locationId[0] !== ' ' && locationId !== '') {
+      objToBase.locationId = locationId;
+    }
   }
 
-  if (typeof (name) !== 'string') {
-    return res.status(400).json({error: 'name type must ba a string.'});
-  } else if (name[0] !== ' ' && name !== '') {
-    objToBase.name = name;
+  if (name) {
+    if (typeof (name) !== 'string') {
+      return res.status(400).json({error: 'name type must ba a string.'});
+    } else if (name[0] !== ' ' && name !== '') {
+      objToBase.name = name;
+    }
   }
 
   await fileDB.updateItem(id, objToBase);

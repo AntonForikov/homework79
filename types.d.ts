@@ -10,10 +10,10 @@ export interface Item {
 
 export type ItemWithOutId = Omit<Item, 'id'>;
 
-export interface Category {
+export interface CategoryLocation {
   id: string,
   title: string,
   description: string | null
 }
 
-export type CategoryWithoutId = Omit<Category, 'id'>;
+export type CategoryLocationWithoutId = Omit<CategoryLocation, 'id'>;

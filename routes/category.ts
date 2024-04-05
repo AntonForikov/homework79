@@ -1,23 +1,23 @@
 import express from 'express';
-import {Category, CategoryWithoutId} from '../types';
+import {CategoryLocation, CategoryLocationWithoutId} from '../types';
 import fileDB from '../fileDB';
 
 const categoryRouter = express.Router();
 
-categoryRouter.post('/', async (req,res) => {
+categoryRouter.post('/', async (req, res) => {
   const {title, description} = req.body;
 
   if (!title) {
-    return res.status(400).json({error: "To create new category 'title' field is required."});
+    return res.status(400).json({error: 'To create new category \'title\' field is required.'});
   }
 
-  if (typeof(title) !== 'string') {
-    return res.status(400).json({error: "The type of 'title' field must be a string"});
+  if (typeof (title) !== 'string') {
+    return res.status(400).json({error: 'The type of \'title\' field must be a string'});
   } else if (title[0] === ' ') {
-    return res.status(400).json({error: "'title' field can't begin with whitespace."});
+    return res.status(400).json({error: '\'title\' field can\'t begin with whitespace.'});
   }
 
-  const objToBase: CategoryWithoutId = {
+  const objToBase: CategoryLocationWithoutId = {
     title,
     description: typeof (description) !== 'string'
       ? null
@@ -42,7 +42,7 @@ categoryRouter.get('/', async (_req, res) => {
   return res.json(result);
 });
 
-categoryRouter.get('/:id', async (req,res) => {
+categoryRouter.get('/:id', async (req, res) => {
   const {id} = req.params;
   const target = await fileDB.getCategoryById(id);
 
@@ -51,7 +51,7 @@ categoryRouter.get('/:id', async (req,res) => {
   return res.json(target);
 });
 
-categoryRouter.delete('/:id', async (req,res) => {
+categoryRouter.delete('/:id', async (req, res) => {
   const {id} = req.params;
   const target = await fileDB.getCategoryById(id);
   const items = await fileDB.getItems();
@@ -64,14 +64,14 @@ categoryRouter.delete('/:id', async (req,res) => {
   res.json({success: 'Category remove'});
 });
 
-categoryRouter.put('/:id', async (req,res) => {
+categoryRouter.put('/:id', async (req, res) => {
   const {id} = req.params;
   const {title, description} = req.body;
   const objToUpdate = await fileDB.getCategoryById(id);
 
   if (!objToUpdate) return res.status(404).json({error: 'There is no such category'});
 
-  const objToBase: Category = {
+  const objToBase: CategoryLocation = {
     ...objToUpdate,
     description: typeof (description) !== 'string'
       ? null
@@ -80,10 +80,12 @@ categoryRouter.put('/:id', async (req,res) => {
         : description
   };
 
-  if (typeof (title) !== 'string') {
-    return res.status(400).json({error: 'title type must ba a string.'});
-  } else if (title[0] !== ' ' && title !== '') {
-    objToBase.title = title;
+  if (title) {
+    if (typeof (title) !== 'string') {
+      return res.status(400).json({error: 'title type must ba a string.'});
+    } else if (title[0] !== ' ' && title !== '') {
+      objToBase.title = title;
+    }
   }
 
   await fileDB.updateCategory(id, objToBase);
