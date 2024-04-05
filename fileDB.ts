@@ -3,7 +3,7 @@ import {CategoryLocation, CategoryLocationWithoutId, Item, ItemWithOutId} from '
 
 const itemFilename = './items.json';
 const categoryFilename = './categories.json';
-const locationFilename = './locations';
+const locationFilename = './locations.json';
 
 let itemList: Item[] = [];
 let categoryList: CategoryLocation[] = [];
